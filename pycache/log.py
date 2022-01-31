@@ -19,7 +19,7 @@ def exited(code: int):
         1: "host or port is wrong"
     }.get(code, "unknown")
 
-    _log(f"exited! with {code}({message})")
+    _log(f"exited! with {code} ({message})")
 
     exit(1)
 
