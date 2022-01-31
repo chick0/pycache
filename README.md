@@ -1,6 +1,6 @@
 # PyCache
 
-simple key:value server written by **Python**
+simple key:value server written with **Python**
 
 and client is [here](https://github.com/chick0/pycache_client/)
 
