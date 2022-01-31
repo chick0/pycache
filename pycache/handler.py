@@ -25,6 +25,12 @@ class PyCacheHandler(BaseRequestHandler):
         length = int.from_bytes(length, LENGTH_TYPE)
 
         payload = self.request.recv(length)
+
+        need_more = length - len(payload)
+        while need_more:
+            need_more = length - len(payload)
+            payload += self.request.recv(need_more)
+
         result = parse_command(
             log=CommandLog(client=self.client_address),
             payload=payload
