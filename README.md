@@ -28,7 +28,7 @@ PORT = your port
 ```
 default is '**127.0.0.1:5521**'
 
-### Limit memory usage
+### set memory limit
 
 set an environment variables
 ```
