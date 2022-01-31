@@ -2,6 +2,8 @@
 
 simple key:value server written by **Python**
 
+and client is [here](https://github.com/chick0/pycache_client/)
+
 
 ## run server
 ```commandline
