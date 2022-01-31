@@ -26,3 +26,12 @@ set an environment variables
 HOST = your ip (like 127.0.0.1, 0.0.0.0)
 PORT = your port
 ```
+default is '**127.0.0.1:5521**'
+
+### Limit memory usage
+
+set an environment variables
+```
+MAX = size of memory (like 30MB, 8GB)
+```
+default is '**800MB**'
