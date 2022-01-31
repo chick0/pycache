@@ -1,3 +1,5 @@
+from hashlib import md5
+
 from . import STORAGE
 from .log import CommandLog
 from .const import LENGTH_TYPE
@@ -7,7 +9,7 @@ class Commands:
     def __init__(self, command: str, key: str):
         self.commands = [
             "SET",
-            "GET", "DEL",
+            "GET", "DEL", "MD5"
         ]
 
         if command in self.commands:
@@ -40,6 +42,14 @@ class Commands:
             return b"undefined key"
 
         return b""
+
+    def on_md5(self, **kwargs) -> bytes:
+        target = STORAGE.get(self.key, None)
+
+        if target is None:
+            return b""
+
+        return md5(target).hexdigest().encode()
 
 
 def parse_command(log: CommandLog, payload: bytes) -> bytes:
