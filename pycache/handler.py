@@ -9,6 +9,10 @@ from .const import (
 
 
 class PyCacheHandler(BaseRequestHandler):
+    def __init__(self, request, client_address, server):
+        self.log = CommandLog(client=client_address)
+        super().__init__(request, client_address, server)
+
     def send(self, payload: bytes):
         length = len(payload)
         length = length.to_bytes(LENGTH_SIZE, LENGTH_TYPE)
@@ -17,7 +21,7 @@ class PyCacheHandler(BaseRequestHandler):
         self.request.send(payload)
 
     def setup(self) -> None:
-        CommandLog(client=self.client_address).connect()
+        self.log.connect()
         return
 
     def handle(self) -> None:
@@ -32,12 +36,12 @@ class PyCacheHandler(BaseRequestHandler):
             payload += self.request.recv(need_more)
 
         result = parse_command(
-            log=CommandLog(client=self.client_address),
+            log=self.log,
             payload=payload
         )
 
         self.send(result)
 
     def finish(self) -> None:
-        CommandLog(client=self.client_address).disconnect()
+        self.log.disconnect()
         return
