@@ -3,39 +3,40 @@ from hashlib import md5
 from . import STORAGE
 from .log import CommandLog
 from .const import LENGTH_TYPE
+from .cleaner import clean_up
 
 
 class Commands:
-    def __init__(self, command: str, key: str):
-        self.commands = [
-            "SET",
-            "GET", "DEL", "MD5"
-        ]
+    def __init__(self, command: str, key: str, value: bytes = b""):
+        self.command = command.lower()
+        self.key = key
+        self.value = value
 
-        if command in self.commands:
-            self.command = command.lower()
-            self.key = key
-        else:
-            raise TypeError
+    @property
+    def memory(self) -> int:
+        size = STORAGE.__sizeof__()
+        for b in STORAGE.values():
+            size += b.__sizeof__()
 
-    def run(self, **kwargs) -> bytes:
-        return getattr(self, "on_" + self.command)(**kwargs)
+        return size
 
-    def on_set(self, payload: bytes) -> bytes:
-        msg = b"created"
-        if self.key in STORAGE.keys():
-            msg = b"updated"
+    def run(self) -> bytes:
+        return getattr(self, "on_" + self.command)()
 
+    def on_set(self) -> bytes:
         STORAGE.update({
-            self.key: payload
+            self.key: self.value
         })
 
-        return msg
+        if self.memory > STORAGE.__limit__:
+            clean_up(memory=self.memory)
 
-    def on_get(self, **kwargs) -> bytes:
+        return b"updated"
+
+    def on_get(self) -> bytes:
         return STORAGE.get(self.key, b"")
 
-    def on_del(self, **kwargs) -> bytes:
+    def on_del(self) -> bytes:
         try:
             STORAGE.pop(self.key)
         except KeyError:
@@ -43,7 +44,7 @@ class Commands:
 
         return b""
 
-    def on_md5(self, **kwargs) -> bytes:
+    def on_md5(self) -> bytes:
         target = STORAGE.get(self.key, None)
 
         if target is None:
@@ -58,16 +59,18 @@ def parse_command(log: CommandLog, payload: bytes) -> bytes:
     key_size = int.from_bytes(payload[3:4], LENGTH_TYPE)
     key = payload[4:4 + key_size].decode()
 
-    payload = payload[4 + key_size:]
+    value = payload[4 + key_size:]
 
-    log.execute(command=command, key=key)
+    context = Commands(
+        command=command,
+        key=key,
+        value=value
+    )
 
     try:
-        context = Commands(
-            command=command,
-            key=key
-        )
-    except TypeError:
+        log.execute(command=command, key=key)
+        result = context.run()
+    except AttributeError:
         return b"undefined command"
 
-    return context.run(payload=payload)
+    return result

@@ -6,10 +6,10 @@ def _log(message: str):
     print(now, message, sep=" || ")
 
 
-def start(address: tuple):
+def start(address: tuple, size: int):
     host, port = address
     address = f"'{host}:{port}'"
-    _log(f"PyCache server started at {address}")
+    _log(f"PyCache started at {address} and memory limit is '{size}'")
 
 
 def exited(code: int):
@@ -37,3 +37,7 @@ class CommandLog:
 
     def execute(self, command: str, key: str = None):
         _log(f"command executed '{command} {key}' from {self.client}")
+
+
+def clean(key: str, memory: str):
+    _log(f"cleaner remove '{key}' '{memory}'")

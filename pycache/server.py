@@ -4,12 +4,16 @@ from socketserver import TCPServer
 from .log import start
 from .log import exited
 from .handler import PyCacheHandler
+from . import STORAGE
+from .size import (parse_size, MB)
 from .const import (
     PYCACHE_HOST,
     PYCACHE_PORT,
+    PYCACHE_STORAGE_MAX,
 
     DEFAULT_HOST,
     DEFAULT_PORT,
+    DEFAULT_STORAGE_MAX
 )
 
 
@@ -23,7 +27,14 @@ def start_server():
         server_address = (None, None)
         exited(1)
 
-    start(address=server_address)
+    try:
+        size = parse_size(size=environ.get(PYCACHE_STORAGE_MAX))
+    except (AttributeError, ValueError):
+        size = DEFAULT_STORAGE_MAX * MB
+
+    setattr(STORAGE, "__limit__", size)
+
+    start(address=server_address, size=size)
     server = TCPServer(server_address, PyCacheHandler)
 
     try:

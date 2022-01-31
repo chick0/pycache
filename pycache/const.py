@@ -1,10 +1,12 @@
 # Environment key
 PYCACHE_HOST = "HOST"
 PYCACHE_PORT = "PORT"
+PYCACHE_STORAGE_MAX = "MAX"
 
 # Defaults
 DEFAULT_HOST = "127.0.0.1"
 DEFAULT_PORT = "5521"
+DEFAULT_STORAGE_MAX = 800
 
 
 # size of size
