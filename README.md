@@ -24,4 +24,3 @@ set an environment variables
 HOST = your ip (like 127.0.0.1, 0.0.0.0)
 PORT = your port
 ```
-PyCache server will bind at HOST:PORT
