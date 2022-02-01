@@ -28,7 +28,7 @@ class Commands:
             self.key: self.value
         })
 
-        if self.memory > STORAGE.__limit__:
+        if self.memory > STORAGE.limit:
             clean_up(memory=self.memory)
 
         return b"updated"

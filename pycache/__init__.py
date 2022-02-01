@@ -5,7 +5,7 @@ __version__ = "1.1.0"
 # storage
 class Storage(dict):
     def __init__(self):
-        self.__limit__ = 0
+        self.limit = 0
         super().__init__()
 
 

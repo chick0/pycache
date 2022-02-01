@@ -5,13 +5,13 @@ from .log import clean
 
 
 def _work(memory: int):
-    while memory > STORAGE.__limit__:
+    while memory > STORAGE.limit:
         key = None
         for q in STORAGE:
             key = q
             break
 
-        clean(key=key, memory=f"{memory} > {STORAGE.__limit__}")
+        clean(key=key, memory=f"{memory} > {STORAGE.limit}")
         memory -= STORAGE.get(key).__sizeof__()
         STORAGE.pop(key)
 

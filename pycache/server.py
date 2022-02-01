@@ -32,7 +32,7 @@ def start_server():
     except (AttributeError, ValueError):
         size = DEFAULT_STORAGE_MAX * MB
 
-    setattr(STORAGE, "__limit__", size)
+    STORAGE.limit = size
 
     start(address=server_address, size=size)
     server = TCPServer(server_address, PyCacheHandler)
