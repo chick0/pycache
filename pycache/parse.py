@@ -2,6 +2,7 @@ from hashlib import md5
 
 from . import STORAGE
 from .log import CommandLog
+from .const import LENGTH_SIZE
 from .const import LENGTH_TYPE
 from .cleaner import clean_up
 
@@ -31,7 +32,7 @@ class Commands:
         if self.memory > STORAGE.limit:
             clean_up(memory=self.memory)
 
-        return b"updated"
+        return len(self.value).to_bytes(LENGTH_SIZE, LENGTH_TYPE)
 
     def on_get(self) -> bytes:
         return STORAGE.get(self.key, b"")
